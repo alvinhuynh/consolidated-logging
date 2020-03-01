@@ -2,9 +2,10 @@
   "name": "consolidated-logging",
   "version": "1.0.0",
   "description": "A client side logging library which allows application developers to log UI events to a remote server.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/alvinhuynh/consolidated-logging/issues"
   },
-  "homepage": "https://github.com/alvinhuynh/consolidated-logging#readme"
+  "homepage": "https://github.com/alvinhuynh/consolidated-logging#readme",
+  "devDependencies": {
+    "prettier": "^1.19.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.8.3",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  }
 }
