@@ -130,6 +130,6 @@
                 t
             );
         })();
-        e.default = o;
+        e.default = new o();
     },
 ]);

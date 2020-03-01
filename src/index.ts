@@ -75,4 +75,4 @@ class ConsolidatedLogger {
     }
 }
 
-export default ConsolidatedLogger;
+export default new ConsolidatedLogger();
