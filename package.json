@@ -1,0 +1,19 @@
+{
+  "name": "consolidated-logging",
+  "version": "1.0.0",
+  "description": "A client side logging library which allows application developers to log UI events to a remote server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvinhuynh/consolidated-logging.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alvinhuynh/consolidated-logging/issues"
+  },
+  "homepage": "https://github.com/alvinhuynh/consolidated-logging#readme"
+}
