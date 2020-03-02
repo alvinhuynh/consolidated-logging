@@ -43,7 +43,6 @@ declare class ConsolidatedLogger {
     config: ConsolidatedLoggerConfig;
     alreadyLoggedEvents: Array<LogEvent>;
     currentlyActiveEvents: Array<CustomTimeDurationLogEvent>;
-    isOnline: boolean;
     handleConnectionChange(event: Event): void;
     constructor(consolidatedLoggerConfig: ConsolidatedLoggerConfig);
     _sendLogEvent(event: LogEvent): void;

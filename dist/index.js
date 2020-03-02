@@ -16,26 +16,20 @@ var ConsolidatedLogger = /** @class */ (function () {
         };
         this.alreadyLoggedEvents = [];
         this.currentlyActiveEvents = [];
-        this.isOnline = true;
         this.config = __assign(__assign({}, this.config), consolidatedLoggerConfig);
         window.addEventListener('online', this.handleConnectionChange);
         window.addEventListener('offline', this.handleConnectionChange);
     }
     ConsolidatedLogger.prototype.handleConnectionChange = function (event) {
         if (event.type === 'online') {
-            this.isOnline = true;
             var numberOfalreadyLoggedEvents = this.alreadyLoggedEvents.length;
             for (var i = 0; i < numberOfalreadyLoggedEvents; i++) {
-                var logEvent = this.alreadyLoggedEvents.pop();
-                this._sendLogEvent(logEvent);
+                this._sendLogEvent(this.alreadyLoggedEvents.pop());
             }
-        }
-        else if (event.type === 'offline') {
-            this.isOnline = false;
         }
     };
     ConsolidatedLogger.prototype._sendLogEvent = function (event) {
-        if (this.isOnline) {
+        if (navigator.onLine) {
             fetch(this.config.apiHost, {
                 method: 'POST',
                 headers: {

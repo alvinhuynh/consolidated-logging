@@ -62,19 +62,14 @@ class ConsolidatedLogger {
 
     alreadyLoggedEvents: Array<LogEvent> = [];
     currentlyActiveEvents: Array<CustomTimeDurationLogEvent> = [];
-    isOnline = true;
 
     handleConnectionChange(event: Event) {
         if (event.type === 'online') {
-            this.isOnline = true;
             const numberOfalreadyLoggedEvents = this.alreadyLoggedEvents.length;
 
             for (let i = 0; i < numberOfalreadyLoggedEvents; i++) {
-                const logEvent = this.alreadyLoggedEvents.pop();
-                this._sendLogEvent(logEvent);
+                this._sendLogEvent(this.alreadyLoggedEvents.pop());
             }
-        } else if (event.type === 'offline') {
-            this.isOnline = false;
         }
     }
 
@@ -89,7 +84,7 @@ class ConsolidatedLogger {
     }
 
     _sendLogEvent(event: LogEvent) {
-        if (this.isOnline) {
+        if (navigator.onLine) {
             fetch(this.config.apiHost, {
                 method: 'POST',
                 headers: {
