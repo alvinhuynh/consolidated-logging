@@ -43,7 +43,7 @@ declare class ConsolidatedLogger {
     config: ConsolidatedLoggerConfig;
     alreadyLoggedEvents: Array<LogEvent>;
     currentlyActiveEvents: Array<CustomTimeDurationLogEvent>;
-    handleConnectionChange(event: Event): void;
+    handleConnectionChange: (event: Event) => void;
     constructor(consolidatedLoggerConfig: ConsolidatedLoggerConfig);
     _sendLogEvent(event: LogEvent): void;
     sendCustomLogEvent(event: CustomMetaData): void;

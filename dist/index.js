@@ -11,23 +11,24 @@ var __assign = (this && this.__assign) || function () {
 };
 var ConsolidatedLogger = /** @class */ (function () {
     function ConsolidatedLogger(consolidatedLoggerConfig) {
+        var _this = this;
         this.config = {
             apiHost: 'https://localhost:8080',
         };
         this.alreadyLoggedEvents = [];
         this.currentlyActiveEvents = [];
+        this.handleConnectionChange = function (event) {
+            if (event.type === 'online') {
+                var numberOfalreadyLoggedEvents = _this.alreadyLoggedEvents.length;
+                for (var i = 0; i < numberOfalreadyLoggedEvents; i++) {
+                    _this._sendLogEvent(_this.alreadyLoggedEvents.pop());
+                }
+            }
+        };
         this.config = __assign(__assign({}, this.config), consolidatedLoggerConfig);
         window.addEventListener('online', this.handleConnectionChange);
         window.addEventListener('offline', this.handleConnectionChange);
     }
-    ConsolidatedLogger.prototype.handleConnectionChange = function (event) {
-        if (event.type === 'online') {
-            var numberOfalreadyLoggedEvents = this.alreadyLoggedEvents.length;
-            for (var i = 0; i < numberOfalreadyLoggedEvents; i++) {
-                this._sendLogEvent(this.alreadyLoggedEvents.pop());
-            }
-        }
-    };
     ConsolidatedLogger.prototype._sendLogEvent = function (event) {
         if (navigator.onLine) {
             fetch(this.config.apiHost, {

@@ -63,7 +63,7 @@ class ConsolidatedLogger {
     alreadyLoggedEvents: Array<LogEvent> = [];
     currentlyActiveEvents: Array<CustomTimeDurationLogEvent> = [];
 
-    handleConnectionChange(event: Event) {
+    handleConnectionChange = (event: Event) => {
         if (event.type === 'online') {
             const numberOfalreadyLoggedEvents = this.alreadyLoggedEvents.length;
 
