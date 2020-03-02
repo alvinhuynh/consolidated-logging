@@ -88,6 +88,7 @@ class ConsolidatedLogger {
 
     _sendLogEvent(event: LogEvent) {
         if (navigator.onLine) {
+             // TODO: Throw or log an error if API call fails.
             fetch(this.config.apiHost, {
                 method: 'POST',
                 headers: {
@@ -132,9 +133,9 @@ class ConsolidatedLogger {
     setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData) {
         const input = document.querySelector(inputChangeMetaData.selector);
         
-        // TODO: Consider throttling this since it can lead to spamming the backend.
-        // Potentially can batch this into one call (e.g. every 3 seconds) instead of once per value change.
         input.addEventListener('input', () => {
+            // TODO: Consider throttling this since it can lead to spamming the backend.
+            // Potentially can batch this into one API call (e.g. every 3 seconds) instead of once per value change.
             this._sendLogEvent({
                 ...inputChangeMetaData,
                 type: 'input-change',
