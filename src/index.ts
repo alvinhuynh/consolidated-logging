@@ -1,3 +1,46 @@
+type InputChangeLogEventType = 'input-change';
+type InputFocusLogEventType = 'input-focus';
+type NavigateLogEventType = 'navigate';
+
+interface BaseLogEvent {
+    time: number;
+}
+
+interface InputChangeLogEvent extends BaseLogEvent {
+    type: InputChangeLogEventType;
+}
+
+interface InputChangeMetaData {
+    type: InputChangeLogEventType;
+    selector: string;
+}
+
+interface InputFocusLogEvent extends BaseLogEvent {
+    type: InputFocusLogEventType;
+}
+
+interface InputFocusMetaData {
+    type: InputFocusLogEventType;
+    selector: string;
+}
+
+interface NavigateLogEvent extends BaseLogEvent {
+    type: NavigateLogEventType;
+    path: string;
+}
+
+interface NavigateMetaData {
+    type: NavigateLogEventType;
+}
+
+type LogEvent = InputChangeLogEvent | InputFocusLogEvent | NavigateLogEvent;
+
+type EventMetaData =
+    | InputChangeMetaData
+    | InputFocusMetaData
+    | NavigateMetaData;
+
+
 class ConsolidatedLogger {
     static config = {
         apiHost: 'localhost:8080',
@@ -27,7 +70,7 @@ class ConsolidatedLogger {
     }
 
     setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData) {
-        const input = document.querySelector(inputChangeMetaData.id);
+        const input = document.querySelector(inputChangeMetaData.selector);
 
         input.addEventListener('input', (event: Event) => {
             this.sendLogEvent({
@@ -38,7 +81,7 @@ class ConsolidatedLogger {
     }
 
     setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData) {
-        const input = document.querySelector(inputFocusMetaData.id);
+        const input = document.querySelector(inputFocusMetaData.selector);
 
         input.addEventListener('focus', (event: Event) => {
             this.sendLogEvent({
@@ -75,4 +118,4 @@ class ConsolidatedLogger {
     }
 }
 
-export default new ConsolidatedLogger();
+export default ConsolidatedLogger;

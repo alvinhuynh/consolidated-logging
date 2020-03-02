@@ -1,27 +1,32 @@
 {
   "name": "consolidated-logging",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A client side logging library which allows application developers to log UI events to a remote server.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js"
+    "build": "babel src/ --out-file ./dist/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alvinhuynh/consolidated-logging.git"
   },
-  "author": "",
+  "author": "Alvin Huynh",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/alvinhuynh/consolidated-logging/issues"
   },
   "homepage": "https://github.com/alvinhuynh/consolidated-logging#readme",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.8.3",
     "prettier": "^1.19.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.8.6"
   }
 }

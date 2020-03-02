@@ -3,9 +3,9 @@
         "outDir": "./dist/",
         "sourceMap": true,
         "noImplicitAny": true,
-        "module": "es6",
-        "target": "es5",
-        "jsx": "react",
-        "allowJs": true
+        "module": "ES6",
+        "target": "ES5",
+        "allowJs": false,
+        "declaration": true
     }
 }
