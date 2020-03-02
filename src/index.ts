@@ -42,12 +42,12 @@ type EventMetaData =
 
 class ConsolidatedLogger {
     static config = {
-        apiHost: 'localhost:8080',
-    }
+        apiHost: 'https://localhost:8080',
+    };
     lastPopStateDocumentLocationTime: number | null = null;
     lastPopStateDocumentLocationPathName: string | null = null;
 
-    sendLogEvent(event: LogEvent) {
+    _sendLogEvent(event: LogEvent) {
         fetch(ConsolidatedLogger.config.apiHost, {
             method: 'POST',
             headers: {
@@ -59,51 +59,56 @@ class ConsolidatedLogger {
 
     setupLogEvent(event: EventMetaData) {
         if (event.type === 'input-change') {
-            this.setupInputChangeLogEvent(event);
+            this._setupInputChangeLogEvent(event);
         } else if (event.type === 'input-focus') {
-            this.setupInputFocusEvent(event);
+            this._setupInputFocusEvent(event);
         } else if (event.type === 'navigate') {
-            this.setupNavigateLogEvent();
+            this._setupNavigateLogEvent();
         }
     }
 
-    setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData) {
+    _setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData) {
         const input = document.querySelector(inputChangeMetaData.selector);
 
         input.addEventListener('input', (event: Event) => {
-            this.sendLogEvent({
+            this._sendLogEvent({
                 type: 'input-change',
                 time: Date.now(),
             });
         });
     }
 
-    setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData) {
+    _setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData) {
         const input = document.querySelector(inputFocusMetaData.selector);
+        let hasFocused = false;
 
         input.addEventListener('focus', (event: Event) => {
-            this.sendLogEvent({
-                type: 'input-change',
+            hasFocused = true;
+            this._sendLogEvent({
+                type: 'input-focus',
                 time: Date.now(),
             });
         });
 
         input.addEventListener('blur', (event: Event) => {
-            this.sendLogEvent({
-                type: 'input-change',
-                time: Date.now(),
-            });
+            if (hasFocused) {
+                this._sendLogEvent({
+                    type: 'input-focus',
+                    time: Date.now(),
+                });
+                hasFocused = false;
+            }
         });
     }
 
-    setupNavigateLogEvent() {
+    _setupNavigateLogEvent() {
         window.onpopstate = (event: PopStateEvent) => {
             if (!this.lastPopStateDocumentLocationTime) {
                 this.lastPopStateDocumentLocationTime = Date.now();
                 this.lastPopStateDocumentLocationPathName =
                     document.location.pathname;
             } else {
-                this.sendLogEvent({
+                this._sendLogEvent({
                     type: 'navigate',
                     time: Date.now() - this.lastPopStateDocumentLocationTime,
                     path: this.lastPopStateDocumentLocationPathName,

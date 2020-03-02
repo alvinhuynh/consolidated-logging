@@ -33,10 +33,10 @@ declare class ConsolidatedLogger {
     };
     lastPopStateDocumentLocationTime: number | null;
     lastPopStateDocumentLocationPathName: string | null;
-    sendLogEvent(event: LogEvent): void;
+    _sendLogEvent(event: LogEvent): void;
     setupLogEvent(event: EventMetaData): void;
-    setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData): void;
-    setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData): void;
-    setupNavigateLogEvent(): void;
+    _setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData): void;
+    _setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData): void;
+    _setupNavigateLogEvent(): void;
 }
 export default ConsolidatedLogger;

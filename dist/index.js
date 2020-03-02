@@ -3,7 +3,7 @@ var ConsolidatedLogger = /** @class */ (function () {
         this.lastPopStateDocumentLocationTime = null;
         this.lastPopStateDocumentLocationPathName = null;
     }
-    ConsolidatedLogger.prototype.sendLogEvent = function (event) {
+    ConsolidatedLogger.prototype._sendLogEvent = function (event) {
         fetch(ConsolidatedLogger.config.apiHost, {
             method: 'POST',
             headers: {
@@ -14,42 +14,47 @@ var ConsolidatedLogger = /** @class */ (function () {
     };
     ConsolidatedLogger.prototype.setupLogEvent = function (event) {
         if (event.type === 'input-change') {
-            this.setupInputChangeLogEvent(event);
+            this._setupInputChangeLogEvent(event);
         }
         else if (event.type === 'input-focus') {
-            this.setupInputFocusEvent(event);
+            this._setupInputFocusEvent(event);
         }
         else if (event.type === 'navigate') {
-            this.setupNavigateLogEvent();
+            this._setupNavigateLogEvent();
         }
     };
-    ConsolidatedLogger.prototype.setupInputChangeLogEvent = function (inputChangeMetaData) {
+    ConsolidatedLogger.prototype._setupInputChangeLogEvent = function (inputChangeMetaData) {
         var _this = this;
         var input = document.querySelector(inputChangeMetaData.selector);
         input.addEventListener('input', function (event) {
-            _this.sendLogEvent({
+            _this._sendLogEvent({
                 type: 'input-change',
                 time: Date.now(),
             });
         });
     };
-    ConsolidatedLogger.prototype.setupInputFocusEvent = function (inputFocusMetaData) {
+    ConsolidatedLogger.prototype._setupInputFocusEvent = function (inputFocusMetaData) {
         var _this = this;
         var input = document.querySelector(inputFocusMetaData.selector);
+        var hasFocused = false;
         input.addEventListener('focus', function (event) {
-            _this.sendLogEvent({
-                type: 'input-change',
+            hasFocused = true;
+            _this._sendLogEvent({
+                type: 'input-focus',
                 time: Date.now(),
             });
         });
         input.addEventListener('blur', function (event) {
-            _this.sendLogEvent({
-                type: 'input-change',
-                time: Date.now(),
-            });
+            if (hasFocused) {
+                _this._sendLogEvent({
+                    type: 'input-focus',
+                    time: Date.now(),
+                });
+                hasFocused = false;
+            }
         });
     };
-    ConsolidatedLogger.prototype.setupNavigateLogEvent = function () {
+    ConsolidatedLogger.prototype._setupNavigateLogEvent = function () {
         var _this = this;
         window.onpopstate = function (event) {
             if (!_this.lastPopStateDocumentLocationTime) {
@@ -58,7 +63,7 @@ var ConsolidatedLogger = /** @class */ (function () {
                     document.location.pathname;
             }
             else {
-                _this.sendLogEvent({
+                _this._sendLogEvent({
                     type: 'navigate',
                     time: Date.now() - _this.lastPopStateDocumentLocationTime,
                     path: _this.lastPopStateDocumentLocationPathName,
@@ -69,7 +74,7 @@ var ConsolidatedLogger = /** @class */ (function () {
         };
     };
     ConsolidatedLogger.config = {
-        apiHost: 'localhost:8080',
+        apiHost: 'https://localhost:8080',
     };
     return ConsolidatedLogger;
 }());
