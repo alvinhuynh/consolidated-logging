@@ -61,7 +61,7 @@ class ConsolidatedLogger {
     };
 
     // TODO: Consider using localStorage to persist in case the user navigates away, closes the window/tab or logs out.
-    // An edge case might when we are in the middle of recording an active event. Depends on whether or not we care
+    // An edge case might happen when we are in the middle of recording an active event. Depends on whether or not we care
     // about this use case. The time duration might throw off the number might be worth dropping.
     alreadyLoggedEvents: Array<LogEvent> = [];
     currentlyActiveEvents: Array<CustomTimeDurationLogEvent> = [];
