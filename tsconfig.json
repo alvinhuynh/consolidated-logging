@@ -8,5 +8,6 @@
         "allowJs": false,
         "declaration": true,
         "rootDir": "src/",
+        "lib": ["es6", "dom"]
     }
 }

@@ -23,24 +23,31 @@ interface InputFocusMetaData {
 interface CustomMetaData {
     type: CustomLogEventType;
 }
-declare type LogEvent = InputChangeLogEvent | InputFocusLogEvent | CustomLogEvent;
-declare type EventMetaData = InputChangeMetaData | InputFocusMetaData;
+declare type LogEvent = InputChangeLogEvent | InputFocusLogEvent | CustomLogEvent | CustomTimeDurationLogEvent;
 interface CustomLogEvent {
     type: CustomLogEventType;
-    start?: number;
+    time: number;
+}
+interface CustomTimeDurationLogEvent {
+    type: CustomLogEventType;
+    start: number;
     end?: number;
 }
-declare class ConsolidatedLogger {
-    static config: {
-        apiHost: string;
-    };
-    eventCache: Record<CustomLogEventType, CustomLogEvent>;
-    _sendLogEvent(event: LogEvent): void;
-    startCustomLogEvent(event: CustomMetaData): void;
-    stopCustomLogEvent(event: CustomMetaData): void;
-    setupLogEvent(event: EventMetaData): void;
-    _setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData): void;
-    _setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData): void;
+interface ConsolidatedLoggerConfig {
+    apiHost?: string;
 }
-declare const _default: ConsolidatedLogger;
-export default _default;
+declare class ConsolidatedLogger {
+    config: ConsolidatedLoggerConfig;
+    alreadyLoggedEvents: Array<LogEvent>;
+    currentlyActiveEvents: Array<CustomTimeDurationLogEvent>;
+    isOnline: boolean;
+    handleConnectionChange(event: Event): void;
+    constructor(consolidatedLoggerConfig: ConsolidatedLoggerConfig);
+    _sendLogEvent(event: LogEvent): void;
+    sendCustomLogEvent(event: CustomMetaData): void;
+    startCustomTimeDurationLogEvent(event: CustomMetaData): void;
+    stopCustomTimeDurationLogEvent(event: CustomMetaData): void;
+    setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData): void;
+    setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData): void;
+}
+export default ConsolidatedLogger;
