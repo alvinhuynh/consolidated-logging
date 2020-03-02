@@ -41,6 +41,7 @@ describe('_sendLogEvent', () => {
                 type: 'input-focus',
             },
         ]);
+        expect(global.fetch).toHaveBeenCalledTimes(0);
     });
 });
 
