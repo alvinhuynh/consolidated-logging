@@ -1,11 +1,12 @@
 declare type InputChangeLogEventType = 'input-change';
 declare type InputFocusLogEventType = 'input-focus';
-declare type NavigateLogEventType = 'navigate';
+declare type CustomLogEventType = string;
 interface BaseLogEvent {
     time: number;
 }
 interface InputChangeLogEvent extends BaseLogEvent {
     type: InputChangeLogEventType;
+    selector: string;
 }
 interface InputChangeMetaData {
     type: InputChangeLogEventType;
@@ -13,30 +14,33 @@ interface InputChangeMetaData {
 }
 interface InputFocusLogEvent extends BaseLogEvent {
     type: InputFocusLogEventType;
+    selector: string;
 }
 interface InputFocusMetaData {
     type: InputFocusLogEventType;
     selector: string;
 }
-interface NavigateLogEvent extends BaseLogEvent {
-    type: NavigateLogEventType;
-    path: string;
+interface CustomMetaData {
+    type: CustomLogEventType;
 }
-interface NavigateMetaData {
-    type: NavigateLogEventType;
+declare type LogEvent = InputChangeLogEvent | InputFocusLogEvent | CustomLogEvent;
+declare type EventMetaData = InputChangeMetaData | InputFocusMetaData;
+interface CustomLogEvent {
+    type: CustomLogEventType;
+    start?: number;
+    end?: number;
 }
-declare type LogEvent = InputChangeLogEvent | InputFocusLogEvent | NavigateLogEvent;
-declare type EventMetaData = InputChangeMetaData | InputFocusMetaData | NavigateMetaData;
 declare class ConsolidatedLogger {
     static config: {
         apiHost: string;
     };
-    lastPopStateDocumentLocationTime: number | null;
-    lastPopStateDocumentLocationPathName: string | null;
+    eventCache: Record<CustomLogEventType, CustomLogEvent>;
     _sendLogEvent(event: LogEvent): void;
+    startCustomLogEvent(event: CustomMetaData): void;
+    stopCustomLogEvent(event: CustomMetaData): void;
     setupLogEvent(event: EventMetaData): void;
     _setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData): void;
     _setupInputFocusEvent(inputFocusMetaData: InputFocusMetaData): void;
-    _setupNavigateLogEvent(): void;
 }
-export default ConsolidatedLogger;
+declare const _default: ConsolidatedLogger;
+export default _default;

@@ -7,6 +7,6 @@
         "target": "ES5",
         "allowJs": false,
         "declaration": true,
-        "rootDir": "src/"
+        "rootDir": "src/",
     }
 }

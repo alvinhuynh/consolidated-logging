@@ -1,6 +1,6 @@
 type InputChangeLogEventType = 'input-change';
 type InputFocusLogEventType = 'input-focus';
-type NavigateLogEventType = 'navigate';
+type CustomLogEventType = string;
 
 interface BaseLogEvent {
     time: number;
@@ -8,6 +8,7 @@ interface BaseLogEvent {
 
 interface InputChangeLogEvent extends BaseLogEvent {
     type: InputChangeLogEventType;
+    selector: string;
 }
 
 interface InputChangeMetaData {
@@ -17,6 +18,7 @@ interface InputChangeMetaData {
 
 interface InputFocusLogEvent extends BaseLogEvent {
     type: InputFocusLogEventType;
+    selector: string;
 }
 
 interface InputFocusMetaData {
@@ -24,28 +26,26 @@ interface InputFocusMetaData {
     selector: string;
 }
 
-interface NavigateLogEvent extends BaseLogEvent {
-    type: NavigateLogEventType;
-    path: string;
+interface CustomMetaData {
+    type: CustomLogEventType;
 }
 
-interface NavigateMetaData {
-    type: NavigateLogEventType;
+type LogEvent = InputChangeLogEvent | InputFocusLogEvent | CustomLogEvent;
+
+type EventMetaData = InputChangeMetaData | InputFocusMetaData;
+
+interface CustomLogEvent {
+    type: CustomLogEventType;
+    start?: number;
+    end?: number;
 }
-
-type LogEvent = InputChangeLogEvent | InputFocusLogEvent | NavigateLogEvent;
-
-type EventMetaData =
-    | InputChangeMetaData
-    | InputFocusMetaData
-    | NavigateMetaData;
 
 class ConsolidatedLogger {
     static config = {
         apiHost: 'https://localhost:8080',
     };
-    lastPopStateDocumentLocationTime: number | null = null;
-    lastPopStateDocumentLocationPathName: string | null = null;
+
+    eventCache: Record<CustomLogEventType, CustomLogEvent> = {};
 
     _sendLogEvent(event: LogEvent) {
         fetch(ConsolidatedLogger.config.apiHost, {
@@ -57,13 +57,24 @@ class ConsolidatedLogger {
         });
     }
 
+    startCustomLogEvent(event: CustomMetaData) {
+        this.eventCache[event.type] = {
+            type: event.type,
+            start: Date.now(),
+        };
+    }
+
+    stopCustomLogEvent(event: CustomMetaData) {
+        const customEvent = this.eventCache[event.type];
+        customEvent.end = Date.now();
+        this._sendLogEvent(customEvent);
+    }
+
     setupLogEvent(event: EventMetaData) {
         if (event.type === 'input-change') {
             this._setupInputChangeLogEvent(event);
         } else if (event.type === 'input-focus') {
             this._setupInputFocusEvent(event);
-        } else if (event.type === 'navigate') {
-            this._setupNavigateLogEvent();
         }
     }
 
@@ -74,6 +85,7 @@ class ConsolidatedLogger {
             this._sendLogEvent({
                 type: 'input-change',
                 time: Date.now(),
+                selector: inputChangeMetaData.selector,
             });
         });
     }
@@ -84,10 +96,6 @@ class ConsolidatedLogger {
 
         input.addEventListener('focus', (event: Event) => {
             hasFocused = true;
-            this._sendLogEvent({
-                type: 'input-focus',
-                time: Date.now(),
-            });
         });
 
         input.addEventListener('blur', (event: Event) => {
@@ -95,30 +103,12 @@ class ConsolidatedLogger {
                 this._sendLogEvent({
                     type: 'input-focus',
                     time: Date.now(),
+                    selector: inputFocusMetaData.selector,
                 });
                 hasFocused = false;
             }
         });
     }
-
-    _setupNavigateLogEvent() {
-        window.onpopstate = (event: PopStateEvent) => {
-            if (!this.lastPopStateDocumentLocationTime) {
-                this.lastPopStateDocumentLocationTime = Date.now();
-                this.lastPopStateDocumentLocationPathName =
-                    document.location.pathname;
-            } else {
-                this._sendLogEvent({
-                    type: 'navigate',
-                    time: Date.now() - this.lastPopStateDocumentLocationTime,
-                    path: this.lastPopStateDocumentLocationPathName,
-                });
-
-                this.lastPopStateDocumentLocationTime = null;
-                this.lastPopStateDocumentLocationPathName = null;
-            }
-        };
-    }
 }
 
-export default ConsolidatedLogger;
+export default new ConsolidatedLogger();

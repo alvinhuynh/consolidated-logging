@@ -1,6 +1,6 @@
 {
   "name": "consolidated-logging",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A client side logging library which allows application developers to log UI events to a remote server.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,11 +21,11 @@
   },
   "homepage": "https://github.com/alvinhuynh/consolidated-logging#readme",
   "devDependencies": {
+    "@babel/cli": "7.8.4",
     "@babel/core": "7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.6",
     "@babel/preset-typescript": "^7.8.3",
-    "@babel/cli": "7.8.4",
     "prettier": "^1.19.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
