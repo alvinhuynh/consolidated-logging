@@ -2,8 +2,21 @@ type InputChangeLogEventType = 'input-change';
 type InputFocusLogEventType = 'input-focus';
 type CustomLogEventType = string;
 
+type LogEventData = Object;
+
 interface BaseLogEvent {
-    time: number;
+    time?: number;
+    start?: number;
+    end?: number;
+    data?: LogEventData;
+}
+
+interface BaseMetaData {
+    data?: LogEventData;
+}
+
+interface InputMetaData extends BaseMetaData {
+    selector: string;
 }
 
 interface InputChangeLogEvent extends BaseLogEvent {
@@ -11,22 +24,16 @@ interface InputChangeLogEvent extends BaseLogEvent {
     selector: string;
 }
 
-interface InputChangeMetaData {
-    type: InputChangeLogEventType;
-    selector: string;
-}
+interface InputChangeMetaData extends InputMetaData {}
 
 interface InputFocusLogEvent extends BaseLogEvent {
     type: InputFocusLogEventType;
     selector: string;
 }
 
-interface InputFocusMetaData {
-    type: InputFocusLogEventType;
-    selector: string;
-}
+interface InputFocusMetaData extends InputMetaData {}
 
-interface CustomMetaData {
+interface CustomMetaData extends BaseMetaData {
     type: CustomLogEventType;
 }
 
@@ -36,15 +43,12 @@ type LogEvent =
     | CustomLogEvent
     | CustomTimeDurationLogEvent;
 
-interface CustomLogEvent {
+interface CustomLogEvent extends BaseLogEvent {
     type: CustomLogEventType;
-    time: number;
 }
 
-interface CustomTimeDurationLogEvent {
+interface CustomTimeDurationLogEvent extends BaseLogEvent {
     type: CustomLogEventType;
-    start: number;
-    end?: number;
 }
 
 interface ConsolidatedLoggerConfig {
@@ -107,7 +111,7 @@ class ConsolidatedLogger {
 
     startCustomTimeDurationLogEvent(event: CustomMetaData) {
         this.currentlyActiveEvents.push({
-            type: event.type,
+            ...event,
             start: Date.now(),
         });
     }
@@ -130,11 +134,11 @@ class ConsolidatedLogger {
     setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData) {
         const input = document.querySelector(inputChangeMetaData.selector);
 
-        input.addEventListener('input', (event: Event) => {
+        input.addEventListener('input', () => {
             this._sendLogEvent({
+                ...inputChangeMetaData,
                 type: 'input-change',
                 time: Date.now(),
-                selector: inputChangeMetaData.selector,
             });
         });
     }
@@ -143,16 +147,16 @@ class ConsolidatedLogger {
         const input = document.querySelector(inputFocusMetaData.selector);
         let hasFocused = false;
 
-        input.addEventListener('focus', (event: Event) => {
+        input.addEventListener('focus', () => {
             hasFocused = true;
         });
 
-        input.addEventListener('blur', (event: Event) => {
+        input.addEventListener('blur', () => {
             if (hasFocused) {
                 this._sendLogEvent({
+                    ...inputFocusMetaData,
                     type: 'input-focus',
                     time: Date.now(),
-                    selector: inputFocusMetaData.selector,
                 });
                 hasFocused = false;
             }

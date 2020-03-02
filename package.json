@@ -1,6 +1,6 @@
 {
   "name": "consolidated-logging",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A client side logging library which allows application developers to log UI events to a remote server.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

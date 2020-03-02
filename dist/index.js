@@ -52,10 +52,7 @@ var ConsolidatedLogger = /** @class */ (function () {
         this._sendLogEvent(__assign(__assign({}, event), { time: Date.now() }));
     };
     ConsolidatedLogger.prototype.startCustomTimeDurationLogEvent = function (event) {
-        this.currentlyActiveEvents.push({
-            type: event.type,
-            start: Date.now(),
-        });
+        this.currentlyActiveEvents.push(__assign(__assign({}, event), { start: Date.now() }));
     };
     ConsolidatedLogger.prototype.stopCustomTimeDurationLogEvent = function (event) {
         var customEventIndex = this.currentlyActiveEvents.findIndex(function (currentlyActiveEvent) {
@@ -71,28 +68,20 @@ var ConsolidatedLogger = /** @class */ (function () {
     ConsolidatedLogger.prototype.setupInputChangeLogEvent = function (inputChangeMetaData) {
         var _this = this;
         var input = document.querySelector(inputChangeMetaData.selector);
-        input.addEventListener('input', function (event) {
-            _this._sendLogEvent({
-                type: 'input-change',
-                time: Date.now(),
-                selector: inputChangeMetaData.selector,
-            });
+        input.addEventListener('input', function () {
+            _this._sendLogEvent(__assign(__assign({}, inputChangeMetaData), { type: 'input-change', time: Date.now() }));
         });
     };
     ConsolidatedLogger.prototype.setupInputFocusEvent = function (inputFocusMetaData) {
         var _this = this;
         var input = document.querySelector(inputFocusMetaData.selector);
         var hasFocused = false;
-        input.addEventListener('focus', function (event) {
+        input.addEventListener('focus', function () {
             hasFocused = true;
         });
-        input.addEventListener('blur', function (event) {
+        input.addEventListener('blur', function () {
             if (hasFocused) {
-                _this._sendLogEvent({
-                    type: 'input-focus',
-                    time: Date.now(),
-                    selector: inputFocusMetaData.selector,
-                });
+                _this._sendLogEvent(__assign(__assign({}, inputFocusMetaData), { type: 'input-focus', time: Date.now() }));
                 hasFocused = false;
             }
         });
