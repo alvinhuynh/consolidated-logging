@@ -9,14 +9,14 @@ interface InputChangeLogEvent extends BaseLogEvent {
 }
 interface InputChangeMetaData {
     type: InputChangeLogEventType;
-    id: string;
+    selector: string;
 }
 interface InputFocusLogEvent extends BaseLogEvent {
     type: InputFocusLogEventType;
 }
 interface InputFocusMetaData {
     type: InputFocusLogEventType;
-    id: string;
+    selector: string;
 }
 interface NavigateLogEvent extends BaseLogEvent {
     type: NavigateLogEventType;

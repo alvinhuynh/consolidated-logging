@@ -40,12 +40,10 @@ type EventMetaData =
     | InputFocusMetaData
     | NavigateMetaData;
 
-
 class ConsolidatedLogger {
     static config = {
         apiHost: 'localhost:8080',
-    };
-
+    }
     lastPopStateDocumentLocationTime: number | null = null;
     lastPopStateDocumentLocationPathName: string | null = null;
 
