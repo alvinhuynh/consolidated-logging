@@ -131,7 +131,9 @@ class ConsolidatedLogger {
 
     setupInputChangeLogEvent(inputChangeMetaData: InputChangeMetaData) {
         const input = document.querySelector(inputChangeMetaData.selector);
-
+        
+        // TODO: Consider throttling this since it can lead to spamming the backend.
+        // Potentially can batch this into one call instead of once per value change.
         input.addEventListener('input', () => {
             this._sendLogEvent({
                 ...inputChangeMetaData,
